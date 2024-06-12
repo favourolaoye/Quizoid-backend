@@ -5,8 +5,8 @@ const cors = require('cors');
 const adminRoutes = require('./routes/adminRoutes');
 const examRoutes = require('./routes/examRoutes');
 const studentRoutes = require('./routes/studentRoutes');
+const lecturerRoutes = require('./routes/lecturerRoutes');
 require('dotenv').config();
-
 
 const app = express();
 
@@ -16,7 +16,8 @@ app.use(cors()); // Enable CORS
 
 // Database connection
 mongoose.connect(process.env.MONGO_URI, {
-  //
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
 }).then(() => {
   console.log('Connected to the database');
 }).catch((err) => {
@@ -27,6 +28,7 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/admin', adminRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/students', studentRoutes);
+app.use('/api/lecturers', lecturerRoutes); // Add this line
 
 const PORT = process.env.PORT || 3000;
 
