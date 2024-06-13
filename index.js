@@ -12,7 +12,7 @@ const app = express();
 
 // Middleware
 app.use(bodyParser.json());
-app.use(cors()); // Enable CORS
+app.use(cors());
 
 // Database connection
 mongoose.connect(process.env.MONGO_URI, {
@@ -28,7 +28,8 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/admin', adminRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/students', studentRoutes);
-app.use('/api/lecturers', lecturerRoutes); // Add this line
+app.use('/api/lecturers', lecturerRoutes);
+
 
 const PORT = process.env.PORT || 3000;
 
