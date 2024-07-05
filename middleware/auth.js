@@ -9,8 +9,8 @@ module.exports = function (req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, secret); 
-    req.admin = decoded.admin;
+    const decoded = jwt.verify(token, secret);
+    req.user = decoded.user; // this is for all user not just the admin 
     next();
   } catch (err) {
     res.status(401).json({ msg: 'Token is not valid' });

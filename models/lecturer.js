@@ -10,7 +10,11 @@ const courseSchema = new Schema({
   code: {
     type: String,
     required: true,
-  }
+  },
+  unit: {
+    type: String,
+    required: true,
+  },
 });
 
 const lecturerSchema = new Schema({

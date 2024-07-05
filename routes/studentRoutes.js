@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const studentController = require('../controllers/studentController');
+const auth = require('../middleware/auth');
+const adminCheck = require('../middleware/adminCheck');
+const { registerStudent, loginStudent } = require('../controllers/studentController');
 
-router.post('/register', studentController.registerStudent);
+router.post('/add', auth, adminCheck, registerStudent);
+router.post('/login', loginStudent); // Login route for students
 
 module.exports = router;

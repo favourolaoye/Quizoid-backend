@@ -5,7 +5,7 @@ const StudentSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  email: {
+  matricNo: {
     type: String,
     required: true,
     unique: true

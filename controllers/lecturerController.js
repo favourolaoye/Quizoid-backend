@@ -1,22 +1,21 @@
 // controllers/lecturerController.js
 const bcrypt = require("bcryptjs");
-const Lecturer = require('../models/lecturer');
+const jwt = require('jsonwebtoken');
+const Lecturer = require('../models/Lecturer');
+const secret = process.env.SECRET_ID;
 
 const addLecturer = async (req, res) => {
   const { name, lecturerID, password, department, courses } = req.body;
 
   try {
-    // Check for existing lecturer ID
     const existingLecturer = await Lecturer.findOne({ lecturerID });
     if (existingLecturer) {
       return res.status(400).json({ message: 'Lecturer ID already exists' });
     }
 
-    // Hash the password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new lecturer with hashed password
     const newLecturer = new Lecturer({
       name,
       lecturerID,
@@ -34,4 +33,49 @@ const addLecturer = async (req, res) => {
   }
 };
 
-module.exports = { addLecturer };
+const loginLecturer = async (req, res) => {
+  const { lecturerID, password } = req.body;
+
+  try {
+    const lecturer = await Lecturer.findOne({ lecturerID });
+
+    if (!lecturer) {
+      return res.status(400).json({ message: 'Invalid username' });
+    }
+
+    // const isMatch = await bcrypt.compare(password, lecturer.password);
+    // if (!isMatch) {
+    //   return res.status(400).json({ message: 'Invalid credentials' });
+    // }
+
+    if( password !== lecturer.password ){
+      return res.status(400).json({ message: 'Invalid Password' });
+    }
+
+    const payload = {
+      id: lecturer._id,
+      name: lecturer.name,
+      role: 'lecturer',
+      details: {
+        lecturerID: lecturer.lecturerID,
+        department: lecturer.department,
+        courses: lecturer.courses
+      }
+    };
+
+    jwt.sign(
+      payload,
+      secret,
+      { expiresIn: '1h' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token, user: payload });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
+
+module.exports = { addLecturer, loginLecturer };
