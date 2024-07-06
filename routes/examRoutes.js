@@ -11,7 +11,7 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const { createExam, getExamsByCourse, getExamsByLecturerID, getExamById, updateExam, deleteExam } = require('../controllers/examController');
+const { createExam, getExamsByCourse, getExamsByLecturerID, getExamById, updateExam, deleteExam, checkExam } = require('../controllers/examController');
 
 // Create a new exam
 router.post('/', auth, createExam);
@@ -20,7 +20,7 @@ router.post('/', auth, createExam);
 router.get('/course/:courseCode', auth, getExamsByCourse);
 
 // Get all exams by LecturerID
-router.get('/course/:lecturerID', auth, getExamsByLecturerID);
+router.get('/lecturer/:lecturerID', auth, getExamsByLecturerID);
 
 // Get exam by ID
 router.get('/:id', auth, getExamById);
@@ -29,6 +29,9 @@ router.get('/:id', auth, getExamById);
 router.put('/:id', auth, updateExam);
 
 // Delete exam
-router.delete('/:id', auth, deleteExam);
+router.delete('/code/:code', auth, deleteExam); // Corrected endpoint
+
+// Check exam existence
+router.get('/check/:code', auth, checkExam);
 
 module.exports = router;

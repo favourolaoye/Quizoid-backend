@@ -100,20 +100,6 @@ const updateExam = async (req, res) => {
   }
 };
 
-// const deleteExam = async (req, res) => {
-//   const { id } = req.params;
-
-//   try {
-//     const deletedExam = await Exam.findByIdAndDelete(id);
-//     if (!deletedExam) {
-//       return res.status(404).json({ message: 'Exam not found' });
-//     }
-//     res.status(200).json({ message: 'Exam deleted successfully' });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: 'Server error', error });
-//   }
-// };
 
 const deleteExam = async (req, res) => {
   const { code } = req.params;
@@ -123,6 +109,10 @@ const deleteExam = async (req, res) => {
     if (!exam) {
       return res.status(404).json({ message: 'Exam not found' });
     }
+    
+    // If exam found, delete it from the database
+    await Exam.deleteOne();
+
     res.status(200).json({ message: 'Exam deleted successfully' });
   } catch (error) {
     console.error(error);
@@ -130,4 +120,19 @@ const deleteExam = async (req, res) => {
   }
 };
 
-module.exports = { createExam, getExamsByCourse, getExamById, updateExam, deleteExam, getExamsByLecturerID };
+const checkExam = async (req, res) => {
+  const { code } = req.params;
+  
+  try {
+    const exam = await Exam.findOne({ code });
+    if (!exam) {
+      return res.status(404).json({ message: 'Exam not found' });
+    }
+    res.status(200).json({ message: 'Exam already exists for this course' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+module.exports = { createExam, getExamsByCourse, getExamById, updateExam, deleteExam, getExamsByLecturerID, checkExam };
