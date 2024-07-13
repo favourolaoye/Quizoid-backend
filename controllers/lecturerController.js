@@ -66,7 +66,7 @@ const loginLecturer = async (req, res) => {
     jwt.sign(
       payload,
       secret,
-      { expiresIn: '1h' },
+      { expiresIn: '1d' },
       (err, token) => {
         if (err) throw err;
         res.json({ token, user: payload });

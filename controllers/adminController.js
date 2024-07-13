@@ -28,15 +28,15 @@ exports.registerAdmin = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    admin = new Admin({
+    const newAdmin = new Admin({
       adminID,
       name,
       password: hashedPassword,
     });
 
-    await admin.save();
+    await newAdmin.save();
 
-    res.status(201).json({ message: 'Admin added successfully', student: newStudent });
+    res.status(201).json({ message: 'Admin added successfully', admin: newAdmin });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error });
@@ -55,13 +55,13 @@ exports.loginAdmin = async (req, res) => {
     let admin = await Admin.findOne({ adminID });
 
     if (!admin) {
-      return sendErrorResponse(res, 400, 'Invalid credentials');
+      return res.status(400).json({ message: 'Invalid username' });
     }
 
     // Hash user-defined password and compare with one in the DB
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      return sendErrorResponse(res, 400, 'Wrong password');
+      return res.status(400).json({ message: 'Invalid Password' });
     }
 
     const payload = {
@@ -75,7 +75,7 @@ exports.loginAdmin = async (req, res) => {
       },
     };
 
-    jwt.sign(payload, secret, { expiresIn: '1h' }, (err, token) => {
+    jwt.sign(payload, secret, { expiresIn: '1d' }, (err, token) => {
       if (err) throw err;
       res.json({ token, user:payload });
     });

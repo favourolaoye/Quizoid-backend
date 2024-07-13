@@ -25,15 +25,19 @@
 const Exam = require('../models/Exam');
 
 const createExam = async (req, res) => {
-  const { code, title, examType, questions, lecturerID } = req.body;
+  const { courseCode, instruction, type, questions, lecturerID } = req.body;
   
   try {
+    const exists = await Exam.findOne({ courseCode });
+    if (exists) {
+      return res.status(400).json({ message: 'Exam already exists for this course' });
+    }
+
     const newExam = new Exam({
-      code,
-      title,
-      examType,
+      courseCode,
+      instruction,
+      type,
       questions,
-      units,
       lecturerID
     });
 
@@ -50,18 +54,6 @@ const getExamsByCourse = async (req, res) => {
   
   try {
     const exams = await Exam.find({ courseCode });
-    res.status(200).json(exams);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error', error });
-  }
-};
-
-const getExamsByLecturerID = async (req, res) => {
-  const { lecturerID } = req.params;
-  
-  try {
-    const exams = await Exam.find({ lecturerID });
     res.status(200).json(exams);
   } catch (error) {
     console.error(error);
@@ -102,18 +94,17 @@ const updateExam = async (req, res) => {
 
 
 const deleteExam = async (req, res) => {
-  const { code } = req.params;
+  const { courseCode } = req.params;
   
   try {
-    const exam = await Exam.findOne({ code });
-    if (!exam) {
+    const exam = await Exam.findOne({ courseCode });
+    if (exam) {
+      await Exam.deleteOne();  
+      res.status(200).json({ message: 'Exam deleted successfully' });
+    }else{
       return res.status(404).json({ message: 'Exam not found' });
     }
     
-    // If exam found, delete it from the database
-    await Exam.deleteOne();
-
-    res.status(200).json({ message: 'Exam deleted successfully' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Server error', error });
@@ -121,10 +112,10 @@ const deleteExam = async (req, res) => {
 };
 
 const checkExam = async (req, res) => {
-  const { code } = req.params;
+  const { courseCode } = req.params;
   
   try {
-    const exam = await Exam.findOne({ code });
+    const exam = await Exam.findOne({ courseCode });
     if (!exam) {
       return res.status(404).json({ message: 'Exam not found' });
     }
@@ -135,4 +126,4 @@ const checkExam = async (req, res) => {
   }
 };
 
-module.exports = { createExam, getExamsByCourse, getExamById, updateExam, deleteExam, getExamsByLecturerID, checkExam };
+module.exports = { createExam, getExamsByCourse, getExamById, updateExam, deleteExam, checkExam };
