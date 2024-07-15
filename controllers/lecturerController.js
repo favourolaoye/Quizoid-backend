@@ -43,14 +43,14 @@ const loginLecturer = async (req, res) => {
       return res.status(400).json({ message: 'Invalid username' });
     }
 
-    // const isMatch = await bcrypt.compare(password, lecturer.password);
-    // if (!isMatch) {
-    //   return res.status(400).json({ message: 'Invalid credentials' });
-    // }
-
-    if( password !== lecturer.password ){
-      return res.status(400).json({ message: 'Invalid Password' });
+    const isMatch = await bcrypt.compare(password, lecturer.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
+
+    // if( password !== lecturer.password ){
+    //   return res.status(400).json({ message: 'Invalid Password' });
+    // }
 
     const payload = {
       id: lecturer._id,

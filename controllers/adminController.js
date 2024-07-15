@@ -65,20 +65,23 @@ exports.loginAdmin = async (req, res) => {
     }
 
     const payload = {
-      user: {
-        id: admin._id,
+      id: admin._id,
+      name: admin.name,
+      role: 'admin',
+      details:{
         name: admin.name,
-        details:{
-          name: admin.name
-        },
-        role: 'admin',
-      },
+        adminID: admin.adminID,
+      }
     };
 
-    jwt.sign(payload, secret, { expiresIn: '1d' }, (err, token) => {
-      if (err) throw err;
-      res.json({ token, user:payload });
-    });
+    jwt.sign(
+      payload,
+      secret, { expiresIn: '1d' }, 
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token, user:payload });
+      }
+    );
   } catch (err) {
     console.error(err.message);
     sendErrorResponse(res, 500, 'Server error');
