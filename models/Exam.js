@@ -8,6 +8,18 @@ const questionSchema = new Schema({
   correctOption: { type: String },
 });
 
+// const objQuestionSchema = new Schema({
+//   question: { type: String, required: true },
+//   options: [String],
+//   correctOption: { type: String },
+// });
+
+// const thrQuestionSchema = new Schema({
+//   question: { type: String, required: true },
+//   options: [String],
+//   correctOption: { type: String },
+// });
+
 const examSchema = new Schema({
   courseCode: { type: String, required: true },
   instruction: { type: String, required: true },
